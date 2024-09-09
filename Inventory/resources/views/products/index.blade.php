@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
+
 <div class="container">
     <h1>Products</h1>
     <a href="{{ route('products.create') }}" class="btn btn-primary mb-3">Add New Product</a>
@@ -8,7 +9,7 @@
     @if($products->isEmpty())
         <p>No products found.</p>
     @else
-        <table class="table table-bordered">
+        <table class="table table-bordered" id="myTable">
             <thead>
                 <tr>
                     <th>ID</th>
@@ -42,4 +43,9 @@
         </table>
     @endif
 </div>
+<script>
+    $(document).ready(function () {
+        $('#myTable').DataTable();
+    });
+</script>
 @endsection

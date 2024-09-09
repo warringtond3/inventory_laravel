@@ -11,6 +11,12 @@ class Category extends Model
 
     protected $primaryKey = 'CategoryID';
 
+    // Allow mass assignment on these fields
+    protected $fillable = [
+        'CategoryName',
+        'Description',
+    ];
+
     // Define the inverse relationship with Product
     public function products()
     {

@@ -33,19 +33,36 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        $validatedData = $request->validate([
-            'ProductName' => 'required|max:100',
-            'CategoryID' => 'required|exists:categories,CategoryID',
-            'SupplierID' => 'required|exists:suppliers,SupplierID',
-            'QuantityPerUnit' => 'nullable|max:50',
-            'UnitPrice' => 'nullable|numeric',
-            'UnitsInStock' => 'nullable|integer',
-            'UnitsOnOrder' => 'nullable|integer',
-            'ReorderLevel' => 'nullable|integer',
-            'Discontinued' => 'boolean',
+
+        // Log the incoming request data
+        // \Log::info('Received data:', $request->all());
+
+        // Cast 'Discontinued' to a boolean
+        $request->merge([
+            'Discontinued' => $request->has('Discontinued'),
         ]);
 
-        Product::create($validatedData);
+        try {
+            $validatedData = $request->validate([
+                'ProductName' => 'required|max:100',
+                'CategoryID' => 'required|exists:categories,CategoryID',
+                'SupplierID' => 'required|exists:suppliers,SupplierID',
+                'QuantityPerUnit' => 'nullable|max:50',
+                'UnitPrice' => 'nullable|numeric',
+                'UnitsInStock' => 'nullable|integer',
+                'UnitsOnOrder' => 'nullable|integer',
+                'ReorderLevel' => 'nullable|integer',
+                'Discontinued' => 'boolean',
+            ]);
+        
+            // \Log::info('Validated data:', $validatedData);
+
+            Product::create($validatedData);
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            \Log::error('Validation failed:', $e->errors());
+            return back()->withErrors($e->errors())->withInput();
+        }
 
         return redirect()->route('products.index')->with('success', 'Product created successfully.');
     }
@@ -73,6 +90,12 @@ class ProductController extends Controller
      */
     public function update(Request $request, Product $product)
     {
+
+        // Cast 'Discontinued' to a boolean
+        $request->merge([
+            'Discontinued' => $request->has('Discontinued'),
+        ]);
+        
         $validatedData = $request->validate([
             'ProductName' => 'required|max:100',
             'CategoryID' => 'required|exists:categories,CategoryID',

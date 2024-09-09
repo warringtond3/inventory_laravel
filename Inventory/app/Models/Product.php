@@ -11,6 +11,19 @@ class Product extends Model
 
     protected $primaryKey = 'ProductID';
 
+    // Allow mass assignment on these fields
+    protected $fillable = [
+        'ProductName',
+        'CategoryID',
+        'SupplierID',
+        'QuantityPerUnit',
+        'UnitPrice',
+        'UnitsInStock',
+        'UnitsOnOrder',
+        'ReorderLevel',
+        'Discontinued',
+    ];
+
     // Define the relationship with the Category model
     public function category()
     {
